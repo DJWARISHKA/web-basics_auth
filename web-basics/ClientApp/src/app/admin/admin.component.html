@@ -1,0 +1,52 @@
+<form #accountForm="ngForm" class="form-inline" (ngSubmit)="onSubmit()">
+  <div class="form-group mb-2">
+    <input class="form-control" name="email" type="email" placeholder="New email" [(ngModel)]="email">
+  </div>
+  <div class="form-group mx-sm-3 mb-2">
+    <input class="form-control" name="password" placeholder="password" [(ngModel)]="password">
+  </div>
+  <div class="form-group mx-sm-3 mb-2">
+    <label class="form-control" for="role">Role:</label>
+    <select class="form-control" [(ngModel)]="role" id="role" name="role">
+      <option *ngFor="let role of roles">{{ role }}</option>
+    </select>
+  </div>
+  <button class="btn btn-primary mb-2" type="submit">Add</button>
+</form>
+
+<p *ngIf="!accounts"><em>Loading...</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="accounts">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Email</th>
+      <th>Password</th>
+      <th>Role</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let account of accounts">
+      <td>{{ account.id }}</td>
+      <td>{{ account.email }}</td>
+      <td>{{ account.password }}</td>
+      <td>
+        <select *ngIf="account.isEditingRole" [(ngModel)]="changeRole" name="changeRole">
+          <option *ngFor="let role of roles">{{ role }}</option>
+        </select>
+        <span *ngIf="!account.isEditingRole">{{ this.roles[account.role] }}</span>
+      </td>
+      <td>
+        <button class="form-control" *ngIf="!account.isEditingRole" (click)="onEditingRole(account.id)">Change Role</button>
+        <button class="form-control" *ngIf="account.isEditingRole" (click)="onChangeRole(account.id)">OK</button>
+        <button class="form-control" *ngIf="account.isEditingRole" (click)="cancelEditingRole(account.id)">Cancel</button>
+      </td>
+      <td>
+        <button class="form-control" *ngIf="!isAdminAccount(account)" (click)="onDelete(account.id)">Delete user</button>
+      </td>
+
+    </tr>
+  </tbody>
+</table>
